@@ -5,25 +5,71 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<script src="https://s.pageclip.co/v1/pageclip.js" charset="utf-8"></script>
-	<link rel="stylesheet" href="https://s.pageclip.co/v1/pageclip.css" media="screen">
+	<link rel="stylesheet" href="style.css" media="screen">
+	<title>Contact Form</title>
+	<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+	<style>
+		#success-message {
+			display: none;
+			background-color: #4CAF50;
+			color: white;
+			text-align: center;
+			padding: 10px;
+			position: fixed;
+			top: 0;
+			left: 50%;
+			transform: translateX(-50%);
+			z-index: 9999;
+		}
+	</style>
 
-	<title>Document</title>
 </head>
 
 <body>
-	<form action="https://send.pageclip.co/Y5ficvUaJ5tQuiWh7gdXZ8enPKn7pyq0/contactform" class="pageclip-form"
-		method="post">
+	<form id="fs-frm" action="https://formspree.io/f/xwkgvnjl" method="POST">
 
-		<input type="email" name="email" value="roscoe@example.com" />
-		<input type="text" name="subject" value="A contact subject" />
+		<input type="email" name="_replyto" value="roscoe@example.com" required />
+		<input type="text" name="name" value="A contact subject" required />
 
+
+		<label for="department">Department</label>
+		<select name="department" id="department" required="">
+			<option value="" selected="" disabled="">Select</option>
+			<option value="Front Desk">Front Desk</option>
+			<option value="Customer Care">Customer Care</option>
+			<option value="Shipping Receiving">Shipping / Receiving</option>
+			<option value="Billing Accounting">Billing / Accounting</option>
+		</select>
+		<label for="message">Message</label>
+		<textarea rows="5" name="message" id="message"
+			placeholder="Aenean lacinia bibendum nulla sed consectetur. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Donec ullamcorper nulla non metus auctor fringilla nullam quis risus."
+			required=""></textarea>
 		<!-- This button will have a loading spinner. Keep the inner span for best results. -->
-		<button type="submit" class="pageclip-form__submit">
-			<span>Send</span>
-		</button>
+		<input type="submit" value="Send Message">
 	</form>
+	<div class="success-message" id="success-message">Form submitted successfully!</div>
 	<!-- <script src="https://s.pageclip.co/v1/pageclip.js" charset="utf-8"></script> -->
 </body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+	$(document).ready(function () {
+		$('#fs-frm').submit(function (e) {
+			e.preventDefault(); // Предотвращаем стандартное поведение отправки формы
+			var formData = $(this).serialize(); // Сериализуем данные формы в строку запроса
+			$.ajax({
+				type: 'POST', // Определяем метод отправки данных (POST)
+				url: 'https://formspree.io/f/xwkgvnjl', // Указываем URL-адрес для отправки данных
+				data: formData, // Передаем сериализованные данные формы
+				success: function (response) { // Обработчик успешного ответа от сервера
+					$('#success-message').fadeIn().delay(3000).fadeOut(); // Показываем сообщение об успешной отправке, затем скрываем его через 3 секунды
+					$('#fs-frm')[0].reset(); // Очищаем форму после успешной отправки
+				},
+				error: function (xhr, status, error) { // Обработчик ошибки при отправке данных
+					console.error(xhr.responseText); // Выводим сообщение об ошибке в консоль
+				}
+			});
+		});
+	});
+</script>
 
 </html>
